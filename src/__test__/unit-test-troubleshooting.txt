@@ -1,0 +1,11 @@
+1. yarn
+2. yarn test
+3. if test fail try 
+	npm install --save-dev @babel/plugin-transform-runtime
+   then 
+	yarn test
+4. if warning console.error happen try
+	npm install --save-dev @testing-library/react@latest
+	npm install --save-dev @testing-library/jest-dom@latest
+	npm install --save-dev @testing-library/user-event@latest
+5. if something else happens, god help us all.

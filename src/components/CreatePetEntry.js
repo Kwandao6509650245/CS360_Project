@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 
 // mui components
@@ -33,24 +34,34 @@ export default function CreatePetEntry() {
     // axios
     const { createNewPet } = usePetContext();
 
-    const data = JSON.stringify({
-        "data": {
-            "name": name,
-            "animal": animal,
-            "breed": breed,
-            "age": age,
-            "location": location,
-            "sex": sex
-        }
-    })
+    const handleCreateNewPet = (event) => {
+        event.preventDefault(); // Prevent default form submission
 
-    const handleCreateNewPet = () => {
-        createNewPet(data);
-    };
+        // Validate required fields
+        if (!name || !animal || !breed || !age || !location || !sex) {
+            console.log("All fields are required.");
+            return; // Don't proceed if validation fails
+        }
+        
+        const data = JSON.stringify({
+            "data": {
+                "name": name,
+                "animal": animal,
+                "breed": breed,
+                "age": age,
+                "location": location,
+                "sex": sex
+            }
+        });
+    
+        console.log("Submitting data: ", data); // For debugging purposes
+        createNewPet(data); // Call the function
+    };    
 
     return (
         <Box
             component="form"
+            onSubmit={handleCreateNewPet} // Handle form submission
             sx={{
                 '& .MuiTextField-root': { m: 1, width: '50ch' },
                 display: 'flex',
@@ -131,9 +142,9 @@ export default function CreatePetEntry() {
                 </FormControl>
             </div>
             <div>
-                <Button onClick={handleCreateNewPet} variant="outlined" startIcon={<Add />}>
-                    Add Pet Entry
-                </Button>
+            <Button type="submit" variant="outlined" startIcon={<Add />}>
+                Add Pet Entry
+            </Button>
             </div>
             <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
                 <BottomNav/>

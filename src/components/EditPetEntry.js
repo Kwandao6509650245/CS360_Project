@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // mui components
 import {
@@ -6,7 +6,11 @@ import {
     TextField,
     Box,
     Button,
-    Paper
+    Paper,
+    Select,
+    FormControl,
+    InputLabel,
+    MenuItem
 } from '@mui/material';
 
 // mui icons
@@ -67,14 +71,25 @@ export default function EditPetEntry() {
                     variant="outlined"
                     onChange={(e)=>setName(e.target.value)}
                 />
-                <TextField
-                    required
-                    id="filled-animal"
-                    label="Animal"
-                    variant="outlined"
-                    helperText="Cat, Dog, Bird"
-                    onChange={(e)=>setAnimal(e.target.value)}
-                />
+                <FormControl variant="outlined" sx={{ m: 1, width: '50ch' }}>
+                    <InputLabel id="select-animal-label">Animal *</InputLabel>
+                    <Select
+                        labelId="select-animal-label"
+                        id="filled-animal"
+                        value={animal}
+                        onChange={(e) => setAnimal(e.target.value)}
+                        variant="outlined"
+                        sx={{ textAlign: 'left' }} 
+                        inputProps={{ sx: { textAlign: 'left' } }} 
+                    >
+                        <MenuItem value="">
+                            <em>None</em>
+                        </MenuItem>
+                        <MenuItem value="Cat">Cat</MenuItem>
+                        <MenuItem value="Dog">Dog</MenuItem>
+                        <MenuItem value="Bird">Bird</MenuItem>
+                    </Select>
+                </FormControl>
                 <TextField
                     required
                     id="filled-breed-input"
@@ -97,14 +112,24 @@ export default function EditPetEntry() {
                     variant="outlined"
                     onChange={(e)=>setAge(e.target.value)}
                 />
-                <TextField
-                    required
-                    id="sex"
-                    label="Sex"
-                    helperText="Male, Female"
-                    variant="outlined"
-                    onChange={(e)=>setSex(e.target.value)}
-                />
+                <FormControl variant="outlined" sx={{ m: 1, width: '50ch' }}>
+                    <InputLabel id="select-sex-label">Sex *</InputLabel>
+                    <Select
+                        labelId="select-sex-label"
+                        id="sex"
+                        value={sex}
+                        onChange={(e) => setSex(e.target.value)}
+                        variant="outlined"
+                        sx={{ textAlign: 'left' }} 
+                        inputProps={{ sx: { textAlign: 'left' } }} 
+                    >
+                        <MenuItem value="">
+                            <em>None</em>
+                        </MenuItem>
+                        <MenuItem value="Male">Male</MenuItem>
+                        <MenuItem value="Female">Female</MenuItem>
+                    </Select>
+                </FormControl>
             </div>
             <div>
                 <Button variant="outlined" onClick={handleEditPet} startIcon={<Edit />}>
