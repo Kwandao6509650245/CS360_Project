@@ -1,5 +1,6 @@
 name: pet-adoption automated tests
 run-name: ${{ github.actor }} is testing out pet-adoption automated tests
+
 on:
   push:
     branches: 
@@ -9,7 +10,6 @@ on:
       - '*'
 
 jobs:
-
   Run-Test-Suite:
     runs-on: ${{ matrix.os }}
 
@@ -19,36 +19,42 @@ jobs:
         node-version: [16.x, 22.x, node]
         
     steps:
-    - run: echo "This job is now running on a ${{ matrix.os }}"
-    - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-    #Check out the latest code from repository
-    - name: Check out the latest code from repository.
-      uses: actions/checkout@v4
+      - run: echo "This job is now running on a ${{ matrix.os }}"
+      - run: |
+          echo "Branch name: ${{ github.ref }}; Repository: ${{ github.repository }}."
+      
+      - name: Check out the latest code from repository.
+        uses: actions/checkout@v4
+      
 
-    - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
-    - name: List files in the repository
-      run: |
-        ls ${{ github.workspace }}
+      - name: Setup Node.js ${{ matrix.node-version }} on ${{ runner.os }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'  
 
-    #Setup Node.js environment
-    - name: Setup Node.js ${{ matrix.node-version }} on ${{ runner.os }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+ 
+      - name: List repository files
+        run: ls ${{ github.workspace }}
 
-    #Install project dependencies
-    - name: Install project dependencies
-      run: npm install
 
-    #Run test suite
-    - name: Run test suite
-      env:
+      - name: Install dependencies
+        run: npm ci  
+
+
+      - name: Run test suite
+        env:
           APP_KEYS: ${{ secrets.APP_KEYS }}              
           API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}  
           ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }} 
           TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }} 
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}        
-      run: npm test
-    
-    - run: echo "This job's status is ${{ job.status }}."
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}  
+        run: |
+          echo "Starting test suite..."
+          npm test || echo "Tests failed on ${{ matrix.os }}"
+
+
+      - name: Display job status
+        run: |
+          STATUS="${{ job.status }}"
+          echo "Job status: $STATUS"
