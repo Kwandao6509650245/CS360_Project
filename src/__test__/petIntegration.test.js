@@ -1,15 +1,15 @@
 const request = require('supertest');
 const app = require('../../backend/config/server')
-const petRoutes = require('../../routes/petRoutes'); // ปรับเส้นทางให้ถูกต้อง
+const petRoutes = require('../../routes/petRoutes');
 const Pet = require('../../backend/models/Pet');
-const sequelize = require('../../backend/config/database'); // นำเข้าการตั้งค่า sequelize
+const sequelize = require('../../backend/config/database');
 
 
 describe('Integration Tests for Pet API', () => {
     beforeAll(async () => {
-        await Pet.sync({ force: true }); // Reset the database before tests
+        await Pet.sync({ force: true });
 
-        // สร้างสัตว์เลี้ยงสำหรับการทดสอบ
+
         await Pet.create({
             name: 'Fido',
             animal: 'Dog',
@@ -19,7 +19,6 @@ describe('Integration Tests for Pet API', () => {
             sex: 'Male',
         });
 
-        // สร้างสัตว์เลี้ยงเพิ่มเติมเพื่อทดสอบการดึงข้อมูล
         await Pet.create({
             name: 'Bella',
             animal: 'Dog',
@@ -48,7 +47,7 @@ describe('Integration Tests for Pet API', () => {
     });
 
     it('should update an existing pet entry', async () => {
-        // Create a pet to update
+
         const createdPet = await Pet.create({
             name: 'Max',
             animal: 'Cat',
@@ -86,7 +85,6 @@ describe('Integration Tests for Pet API', () => {
 
     it('should return 400 for missing required fields', async () => {
         const newPet = {
-            // ข้อมูลบางฟิลด์ถูกลบออก เช่น name
             animal: 'Dog',
             breed: 'Labrador',
             age: 3,
@@ -121,7 +119,7 @@ describe('Integration Tests for Pet API', () => {
     });
 
     it('should retrieve a pet by ID', async () => {
-        // สร้างสัตว์เลี้ยงที่เราต้องการดึงข้อมูล
+
         const createdPet = await Pet.create({
             name: 'Bella',
             animal: 'Dog',
@@ -149,30 +147,27 @@ describe('Integration Tests for Pet API', () => {
             sex: 'Male',
         });
 
-        console.log(`Pet created with ID: ${createdPet.id}`); // ตรวจสอบ ID ที่ถูกสร้าง
+        console.log(`Pet created with ID: ${createdPet.id}`);
 
         await request(app)
             .delete(`/api/pets/${createdPet.id}`)
             .expect(204);
 
-        // ตรวจสอบว่า pet ถูกลบออกจากฐานข้อมูลแล้ว
+
         const pet = await Pet.findByPk(createdPet.id);
         expect(pet).toBeNull();
     });
 
     it('should return 404 for a non-existing pet', async () => {
         const response = await request(app)
-            .get('/api/pets/9999') // ใช้ ID ที่ไม่มีอยู่
+            .get('/api/pets/9999')
             .expect(404);
 
         expect(response.body.error).toBeDefined();
     });
 
-
-
-
     afterAll(async () => {
-        await sequelize.close(); // ปิดการเชื่อมต่อกับฐานข้อมูล
+        await sequelize.close();
     });
 
 });

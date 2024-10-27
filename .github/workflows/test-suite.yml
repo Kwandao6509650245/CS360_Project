@@ -9,12 +9,17 @@ on:
       - '*'
 
 jobs:
-  Run-npm-on-Ubuntu:
-    runs-on: ubuntu-24.04
 
+  Run-Test-Suite:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, windows-latest, macos-latest]
+        node-version: [16.x, 22.x, node]
+        
     steps:
-
-    - run: echo "This job is now running on a ${{ runner.os }}"
+    - run: echo "This job is now running on a ${{ matrix.os }}"
     - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
     #Check out the latest code from repository
     - name: Check out the latest code from repository.
@@ -26,10 +31,10 @@ jobs:
         ls ${{ github.workspace }}
 
     #Setup Node.js environment
-    - name: Setup Node.js 16.x on Ubuntu
+    - name: Setup Node.js ${{ matrix.node-version }} on ${{ runner.os }}
       uses: actions/setup-node@v4
       with:
-        node-version: 16.x
+        node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
     #Install project dependencies
@@ -38,6 +43,12 @@ jobs:
 
     #Run test suite
     - name: Run test suite
+      env:
+          APP_KEYS: ${{ secrets.APP_KEYS }}              
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}  
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }} 
+          TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }} 
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}        
       run: npm test
     
     - run: echo "This job's status is ${{ job.status }}."

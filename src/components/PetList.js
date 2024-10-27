@@ -1,19 +1,18 @@
 import * as React from 'react';
 
-// mui components
+
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import List from '@mui/material/List';
 import Paper from '@mui/material/Paper';
 
-// custom components
+
 import BottomNav from './BottomNav';
 import PetListItem from './PetListItem';
 
-// data
 import { usePetContext } from '../contexts/PetContext';
 
-// icons
+
 import {
     PersonOutline,
     PetsOutlined,

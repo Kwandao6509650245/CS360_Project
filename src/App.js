@@ -11,20 +11,20 @@ function App() {
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        const response = await fetch('/api/pets'); // URL ของ API
+        const response = await fetch('/api/pets');
         const data = await response.json();
-        setPets(data); // เก็บข้อมูลสัตว์เลี้ยงใน state
+        setPets(data);
       } catch (error) {
         console.error('Error fetching pets:', error);
       }
     };
 
-    fetchPets(); // เรียกใช้ฟังก์ชันดึงข้อมูล
-  }, []); // ทำงานเมื่อ component mount
+    fetchPets();
+  }, []);
 
   return (
     <div className="App">
-      <Interface pets={pets} /> {/* ส่งข้อมูลสัตว์เลี้ยงไปยัง Interface */}
+      <Interface pets={pets} /> { }
     </div>
   );
 }

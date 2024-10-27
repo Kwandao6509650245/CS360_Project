@@ -1,4 +1,4 @@
-// server.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const petRoutes = require('../../routes/petRoutes');
@@ -25,5 +25,5 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message });
 });
 
-// ส่งออก app 
-module.exports = app; // เปลี่ยนแค่ส่งออก app
+
+module.exports = app; 

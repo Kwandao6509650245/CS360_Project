@@ -1,9 +1,9 @@
 const express = require('express');
-const Pet = require('../backend/models/Pet'); // ปรับเส้นทางนี้ให้ถูกต้อง
+const Pet = require('../backend/models/Pet');
 const router = express.Router();
 
 
-// Create a new pet
+
 router.post('/', async (req, res) => {
     try {
         const { name, animal, breed, age, location, sex } = req.body;
@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Update an existing pet
+
 router.put('/:id', async (req, res) => {
     try {
         const [affectedRows] = await Pet.update(req.body, {
@@ -63,17 +63,19 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Delete an existing pet
+
 router.delete('/:id', async (req, res) => {
     const petId = req.params.id;
     const deleted = await Pet.destroy({ where: { id: petId } });
 
     if (deleted) {
-        console.log(`Deleted pet with ID: ${petId}`); // Log when a pet is deleted
+        console.log(`Deleted pet with ID: ${petId}`);
         return res.status(204).send();
     }
-    console.log(`Pet with ID: ${petId} not found`); // Log if the pet is not found
+    console.log(`Pet with ID: ${petId} not found`);
     return res.status(404).json({ error: 'Pet not found' });
 });
+
+
 
 module.exports = router;

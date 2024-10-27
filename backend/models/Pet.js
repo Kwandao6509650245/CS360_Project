@@ -1,6 +1,6 @@
-// src/models/Pet.js
+
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // นำเข้า Sequelize instance ของคุณ
+const sequelize = require('../config/database');
 
 class Pet extends Model { }
 

@@ -13,10 +13,10 @@ const CreatePetEntry = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // เรียกใช้ createNewPet เมื่อฟอร์มถูกส่ง
+
         createNewPet({ name, animal, breed, location, age, sex });
 
-        // เคลียร์ฟิลด์ฟอร์ม
+
         setName('');
         setAnimal('');
         setBreed('');
@@ -33,7 +33,7 @@ const CreatePetEntry = () => {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    aria-label="name" // เพิ่ม aria-label สำหรับการเข้าถึง
+                    aria-label="name"
                 />
             </label>
             <label>
@@ -42,7 +42,7 @@ const CreatePetEntry = () => {
                     type="text"
                     value={animal}
                     onChange={(e) => setAnimal(e.target.value)}
-                    aria-label="animal" // เพิ่ม aria-label สำหรับการเข้าถึง
+                    aria-label="animal"
                 />
             </label>
             <label>
@@ -51,7 +51,7 @@ const CreatePetEntry = () => {
                     type="text"
                     value={breed}
                     onChange={(e) => setBreed(e.target.value)}
-                    aria-label="breed" // เพิ่ม aria-label สำหรับการเข้าถึง
+                    aria-label="breed"
                 />
             </label>
             <label>
@@ -60,7 +60,7 @@ const CreatePetEntry = () => {
                     type="text"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    aria-label="location" // เพิ่ม aria-label สำหรับการเข้าถึง
+                    aria-label="location"
                 />
             </label>
             <label>
@@ -69,7 +69,7 @@ const CreatePetEntry = () => {
                     type="number"
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
-                    aria-label="age" // เพิ่ม aria-label สำหรับการเข้าถึง
+                    aria-label="age"
                 />
             </label>
             <label>
@@ -77,7 +77,7 @@ const CreatePetEntry = () => {
                 <select
                     value={sex}
                     onChange={(e) => setSex(e.target.value)}
-                    aria-label="sex" // เพิ่ม aria-label สำหรับการเข้าถึง
+                    aria-label="sex"
                 >
                     <option value="">Select</option>
                     <option value="Male">Male</option>
