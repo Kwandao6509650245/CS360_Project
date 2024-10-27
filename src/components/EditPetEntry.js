@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-
-// mui components
+import React, { useEffect, useState } from 'react';
 import {
     Typography,
     TextField,
@@ -12,18 +10,12 @@ import {
     InputLabel,
     MenuItem
 } from '@mui/material';
-
-// mui icons
 import { Edit } from '@mui/icons-material';
-
-// custom components
 import BottomNav from './BottomNav';
-
-//axios
 import { usePetContext } from '../contexts/PetContext';
 
-export default function EditPetEntry() {
-    // input data
+const EditPetEntry = () => {
+    const { petId, getPet, updatePet } = usePetContext(); // นำเข้า petId, getPet, และ updatePet
     const [name, setName] = useState("");
     const [animal, setAnimal] = useState("");
     const [breed, setBreed] = useState("");
@@ -31,35 +23,50 @@ export default function EditPetEntry() {
     const [location, setLocation] = useState("");
     const [sex, setSex] = useState("");
 
-    // edit req
-    const { updatePet, petId } = usePetContext();
+    useEffect(() => {
+        const fetchPetData = async () => {
+            const petData = await getPet(petId); // ดึงข้อมูลสัตว์เลี้ยง
+            if (petData) {
+                setName(petData.name);
+                setAnimal(petData.animal);
+                setBreed(petData.breed);
+                setAge(petData.age);
+                setLocation(petData.location);
+                setSex(petData.sex);
+            }
+        };
+        fetchPetData();
+    }, [petId, getPet]);
 
-    const data = JSON.stringify({
-        "data": {
-            "name": name,
-            "animal": animal,
-            "breed": breed,
-            "age": age,
-            "location": location,
-            "sex": sex
+    const handleEditPet = async () => {
+        const data = JSON.stringify({
+            data: {
+                name,
+                animal,
+                breed,
+                age,
+                location,
+                sex
+            }
+        });
+
+        try {
+            await updatePet(petId, data); // ส่งข้อมูลที่แก้ไขไปยัง API
+            // แสดงข้อความสำเร็จหรือเปลี่ยนเส้นทางไปยังหน้าอื่น
+        } catch (error) {
+            console.error('Error updating pet:', error);
+            // คุณอาจแสดงข้อความข้อผิดพลาดใน UI
         }
-    });
-
-    const handleEditPet = () => {
-        updatePet(petId, data);
     };
 
     return (
-        <Box
-            component="form"
-            sx={{
-                '& .MuiTextField-root': { m: 1, width: '50ch' },
-                display: 'flex',
-                flexDirection: 'column'
-            }}
+        <Box component="form" sx={{
+            '& .MuiTextField-root': { m: 1, width: '50ch' },
+            display: 'flex',
+            flexDirection: 'column'
+        }}
             noValidate
-            autoComplete="off"
-        >
+            autoComplete="off">
             <div>
                 <Typography variant="h3" gutterBottom component="div">
                     Edit Pet entry
@@ -69,7 +76,8 @@ export default function EditPetEntry() {
                     id="filled-name"
                     label="Name"
                     variant="outlined"
-                    onChange={(e)=>setName(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                 />
                 <FormControl variant="outlined" sx={{ m: 1, width: '50ch' }}>
                     <InputLabel id="select-animal-label">Animal *</InputLabel>
@@ -79,8 +87,8 @@ export default function EditPetEntry() {
                         value={animal}
                         onChange={(e) => setAnimal(e.target.value)}
                         variant="outlined"
-                        sx={{ textAlign: 'left' }} 
-                        inputProps={{ sx: { textAlign: 'left' } }} 
+                        sx={{ textAlign: 'left' }}
+                        inputProps={{ sx: { textAlign: 'left' } }}
                     >
                         <MenuItem value="">
                             <em>None</em>
@@ -95,14 +103,16 @@ export default function EditPetEntry() {
                     id="filled-breed-input"
                     label="Breed"
                     variant="outlined"
-                    onChange={(e)=>setBreed(e.target.value)}
+                    value={breed}
+                    onChange={(e) => setBreed(e.target.value)}
                 />
                 <TextField
                     required
                     id="filled-location-input"
                     label="Location"
                     variant="outlined"
-                    onChange={(e)=>setLocation(e.target.value)}
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
                 />
                 <TextField
                     required
@@ -110,7 +120,8 @@ export default function EditPetEntry() {
                     label="Age"
                     type="number"
                     variant="outlined"
-                    onChange={(e)=>setAge(e.target.value)}
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
                 />
                 <FormControl variant="outlined" sx={{ m: 1, width: '50ch' }}>
                     <InputLabel id="select-sex-label">Sex *</InputLabel>
@@ -120,8 +131,8 @@ export default function EditPetEntry() {
                         value={sex}
                         onChange={(e) => setSex(e.target.value)}
                         variant="outlined"
-                        sx={{ textAlign: 'left' }} 
-                        inputProps={{ sx: { textAlign: 'left' } }} 
+                        sx={{ textAlign: 'left' }}
+                        inputProps={{ sx: { textAlign: 'left' } }}
                     >
                         <MenuItem value="">
                             <em>None</em>
@@ -137,8 +148,10 @@ export default function EditPetEntry() {
                 </Button>
             </div>
             <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
-                <BottomNav/>
+                <BottomNav />
             </Paper>
         </Box>
     );
-}
+};
+
+export default EditPetEntry; // มีการ export แค่ครั้งเดียว

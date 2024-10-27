@@ -7,46 +7,66 @@ export const usePetContext = () => {
     return useContext(PetContext);
 };
 
-export const PetProvider = ({children}) => {
-    const [pets, setPets] = useState("");
+export const PetProvider = ({ children }) => {
+    const [pets, setPets] = useState([]);
     const [nav_value, set_nav_value] = useState("PetList");
     const [petId, setPetId] = useState("");
-    
-    // add new pet
+
+    // Add new pet
     const createNewPet = async (data) => {
         await http.post("/api/pets", data);
     };
 
-    // update a pet entry
+    // Update a pet entry
     const updatePet = async (petId, data) => {
         await http.put(`/api/pets/${petId}`, data);
     };
 
-    // delete a pet entry
+    // Delete a pet entry
     const deletePet = async (petId) => {
         await http.delete(`/api/pets/${petId}`);
     };
 
-    // change navigation value
+    // Change navigation value
     const changeNavValue = (value) => {
         set_nav_value(value);
     };
 
-    // get pet id value
+    // Get pet by ID
+    const getPetById = async (id) => {
+        try {
+            const response = await http.get(`/api/pets/${id}`);
+            return response.data; // ปรับให้ตรงกับโครงสร้างข้อมูลที่ได้รับ
+        } catch (error) {
+            console.error("Failed to fetch pet by ID:", error);
+            throw error;
+        }
+    };
+
+    // Get pet ID value
     const getPetId = (id) => {
         setPetId(id);
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         const readAllPets = async () => {
-            const response = await http.get("/api/pets");
-            const responseArr = Object.values(response.data.data);
-            setPets(responseArr);
+            try {
+                const response = await http.get("/api/pets");
+                if (response.data) { // ปรับการตรวจสอบเป็น response.data เท่านั้น
+                    const responseArr = Object.values(response.data);
+                    setPets(responseArr);
+                } else {
+                    console.error("Invalid response structure:", response.data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch pets:", error);
+            }
         };
 
-        return readAllPets;
+        readAllPets();
     }, []);
 
+    // Context value
     const value = {
         createNewPet,
         pets,
@@ -55,13 +75,14 @@ export const PetProvider = ({children}) => {
         changeNavValue,
         nav_value,
         getPetId,
-        petId
+        petId,
+        getPetById
     };
 
-    // context
-    return(
+    // Provide context
+    return (
         <PetContext.Provider value={value}>
             {children}
         </PetContext.Provider>
-    )
-}; 
+    );
+};

@@ -1,7 +1,29 @@
-module.exports = ({ env }) => ({
-  host: env('HOST', '0.0.0.0'),
-  port: env.int('PORT', 1337),
-  app: {
-    keys: env.array('APP_KEYS'),
-  },
+// server.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const petRoutes = require('../../routes/petRoutes');
+const sequelize = require('../config/database');
+
+const app = express();
+app.use(bodyParser.json());
+
+app.use('/api/pets', petRoutes);
+
+sequelize.sync()
+  .then(() => {
+    console.log('Database connected successfully');
+    const PORT = process.env.PORT || 3000;
+    const server = app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('Database connection error:', err);
+  });
+
+app.use((err, req, res, next) => {
+  res.status(500).json({ error: err.message });
 });
+
+// ส่งออก app 
+module.exports = app; // เปลี่ยนแค่ส่งออก app
