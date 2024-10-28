@@ -1,0 +1,6 @@
+I fix the yellow message problem.
+When I try to build backend in this branch there is this error which is cannot build backend successfully.
+This happen before I fix the problem.
+Perhap server.js is modified maybe other file too.
+
+Error: Could not load js config file C:\Users\Dev4Life\Desktop\testingcs360groupproject2\CS360_Project\backend\config\server.js: Cannot read properties of undefined (reading 'headersSent')
