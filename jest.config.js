@@ -5,4 +5,5 @@ module.exports = {
     transform: {
         '^.+\\.jsx?$': 'babel-jest',
     },
+    globalTeardown: '<rootDir>/src/__test__/teardown.js'
 };
