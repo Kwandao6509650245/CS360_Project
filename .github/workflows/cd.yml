@@ -118,7 +118,9 @@ jobs:
             REPOSITORY: "${{ secrets.DOCKER_USERNAME }}/petadopt_backend"
             REPOSITORYFRONT: "${{ secrets.DOCKER_USERNAME }}/petadopt_frontend"
         run: |
-          echo "$PRIVATEKEY" > ./pet.pem && chmod 600 ./pet.pem
+          echo "$PRIVATEKEY" > ./pet.pem 
+          chmod 600 ./pet.pem
+          ls -al
           ssh -o StrictHostKeyChecking=no -i ./pet.pem ubuntu@${{ env.INSTANCE_PUBLIC_DNS }} << EOF 
           echo 123 > save.txt
           # sudo yum install -y docker
