@@ -100,10 +100,50 @@ jobs:
             --query 'Reservations[0].Instances[0].PublicDnsName' \
             --output text)
           echo "Instance Public DNS: $INSTANCE_PUBLIC_DNS"
+          echo "INSTANCE_PUBLIC_DNS=$INSTANCE_PUBLIC_DNS" >> $GITHUB_ENV
 
-          if [ $? -ne 0 ]; then
-            echo "Error: Docker container deployment failed."
-            exit 1
-          fi
+          INSTANCE_PUBLIC_IPV4=$(aws ec2 describe-instances \
+            --instance-ids $INSTANCE_ID \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' \
+            --output text)
+          echo "Instance Public IPv4: $INSTANCE_PUBLIC_IPV4"
+          echo "INSTANCE_PUBLIC_IPV4=$INSTANCE_PUBLIC_IPV4" >> $GITHUB_ENV
 
-          echo "Docker container deployed successfully."
+
+      - name: Set SSH Key
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.AWS_KEY_PEM }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ env.INSTANCE_PUBLIC_DNS }} > ~/.ssh/known_hosts
+            
+      - name: Connect server and pull image Backend
+        env:
+            REPOSITORY: "${{ secrets.DOCKER_USERNAME }}/petadopt_backend"
+            REPOSITORYFRONT: "${{ secrets.DOCKER_USERNAME }}/petadopt_frontend"
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ env.INSTANCE_PUBLIC_DNS }} << EOF
+          sudo yum install -y docker
+          sudo service docker start
+          echo "BACKEND"
+          sudo docker pull $REPOSITORY:latest
+          sudo docker run -d --name petadopt_backend \
+          -p 1337:1337 \
+          -e HOST=0.0.0.0 \
+          -e PORT=1337 \
+          -e APP_KEYS=${{ secrets.APP_KEYS }} \
+          -e API_TOKEN_SALT=${{ secrets.API_TOKEN_SALT }} \
+          -e ADMIN_JWT_SECRET=${{ secrets.ADMIN_JWT_SECRET }} \
+          -e TRANSFER_TOKEN_SALT=${{ secrets.TRANSFER_TOKEN_SALT }} \
+          -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+          -e NODE_ENV=production \
+          $REPOSITORY:latest
+          echo "FRONTEND"
+          sudo docker pull $REPOSITORYFRONT:latest
+          sudo docker run -d --name petadopt_frontend \
+          -p 3000:3000 \
+          -e REACT_APP_STRAPI_IP_ADDRESS=${INSTANCE_PUBLIC_IPV4} \
+          -e REACT_APP_STRAPI_PORT=1337 \
+          $REPOSITORYFRONT:latest
+          echo URL for backend http://${INSTANCE_PUBLIC_IPV4}:1337/
+          echo URL for frontend http://${INSTANCE_PUBLIC_IPV4}:3000/
+          EOF
