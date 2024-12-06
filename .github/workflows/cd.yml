@@ -119,7 +119,7 @@ jobs:
         run: |
           echo "${{ secrets.AWS_KEY_PEM }}" > pet && chmod 600 pet
           cat pet
-          ssh -o StrictHostKeyChecking=no -i pet ${{ secrets.SSH_USER }}@${{ env.INSTANCE_PUBLIC_DNS }} << EOF 
+          ssh -T -o StrictHostKeyChecking=no -i pet ${{ secrets.SSH_USER }}@${{ env.INSTANCE_PUBLIC_DNS }} << EOF 
           sudo yum install -y docker
           sudo service docker start
           echo "BACKEND"
