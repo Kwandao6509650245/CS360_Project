@@ -114,10 +114,11 @@ jobs:
             
       - name: Connect server and pull image Backend
         env:
+            PRIVATEKEY: ${{ secrets.AWS_KEY_PEM }}
             REPOSITORY: "${{ secrets.DOCKER_USERNAME }}/petadopt_backend"
             REPOSITORYFRONT: "${{ secrets.DOCKER_USERNAME }}/petadopt_frontend"
         run: |
-          echo "${{ secrets.AWS_KEY_PEM }}" > ./pet.pem && chmod 600 ./pet.pem
+          echo $PRIVATEKEY > ./pet.pem && chmod 600 ./pet.pem
           ssh -o StrictHostKeyChecking=no -i ./pet.pem ubuntu@${{ env.INSTANCE_PUBLIC_DNS }} << EOF 
           sudo yum install -y docker
           sudo service docker start
