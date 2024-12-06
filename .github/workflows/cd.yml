@@ -118,29 +118,29 @@ jobs:
             REPOSITORYFRONT: "${{ secrets.DOCKER_USERNAME }}/petadopt_frontend"
         run: |
           echo "${{ secrets.AWS_KEY_PEM }}" > ./pet.pem && chmod 600 ./pet.pem
-          ssh -o StrictHostKeyChecking=no -i ./pet.pem ubuntu@${{ env.INSTANCE_PUBLIC_DNS }} #<< EOF 
-          # sudo yum install -y docker
-          # sudo service docker start
-          # echo "BACKEND"
-          # sudo docker pull $REPOSITORY:latest
-          # sudo docker run -d --name petadopt_backend \
-          # -p 1337:1337 \
-          # -e HOST=0.0.0.0 \
-          # -e PORT=1337 \
-          # -e APP_KEYS=${{ secrets.APP_KEYS }} \
-          # -e API_TOKEN_SALT=${{ secrets.API_TOKEN_SALT }} \
-          # -e ADMIN_JWT_SECRET=${{ secrets.ADMIN_JWT_SECRET }} \
-          # -e TRANSFER_TOKEN_SALT=${{ secrets.TRANSFER_TOKEN_SALT }} \
-          # -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-          # -e NODE_ENV=production \
-          # $REPOSITORY:latest
-          # echo "FRONTEND"
-          # sudo docker pull $REPOSITORYFRONT:latest
-          # sudo docker run -d --name petadopt_frontend \
-          # -p 3000:3000 \
-          # -e REACT_APP_STRAPI_IP_ADDRESS=${INSTANCE_PUBLIC_IPV4} \
-          # -e REACT_APP_STRAPI_PORT=1337 \
-          # $REPOSITORYFRONT:latest
-          # echo URL for backend http://${INSTANCE_PUBLIC_IPV4}:1337/
-          # echo URL for frontend http://${INSTANCE_PUBLIC_IPV4}:3000/
-          # EOF
+          ssh -o StrictHostKeyChecking=no -i ./pet.pem ubuntu@${{ env.INSTANCE_PUBLIC_DNS }} << EOF 
+          sudo yum install -y docker
+          sudo service docker start
+          echo "BACKEND"
+          sudo docker pull $REPOSITORY:latest
+          sudo docker run -d --name petadopt_backend \
+          -p 1337:1337 \
+          -e HOST=0.0.0.0 \
+          -e PORT=1337 \
+          -e APP_KEYS=${{ secrets.APP_KEYS }} \
+          -e API_TOKEN_SALT=${{ secrets.API_TOKEN_SALT }} \
+          -e ADMIN_JWT_SECRET=${{ secrets.ADMIN_JWT_SECRET }} \
+          -e TRANSFER_TOKEN_SALT=${{ secrets.TRANSFER_TOKEN_SALT }} \
+          -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+          -e NODE_ENV=production \
+          $REPOSITORY:latest
+          echo "FRONTEND"
+          sudo docker pull $REPOSITORYFRONT:latest
+          sudo docker run -d --name petadopt_frontend \
+          -p 3000:3000 \
+          -e REACT_APP_STRAPI_IP_ADDRESS=${INSTANCE_PUBLIC_IPV4} \
+          -e REACT_APP_STRAPI_PORT=1337 \
+          $REPOSITORYFRONT:latest
+          echo URL for backend http://${INSTANCE_PUBLIC_IPV4}:1337/
+          echo URL for frontend http://${INSTANCE_PUBLIC_IPV4}:3000/
+          EOF
