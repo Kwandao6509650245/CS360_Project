@@ -1,10 +1,10 @@
 #!/bin/bash
-cd home/ubuntu
+# cd home/ubuntu
 
-DOCKER_USERNAME="username"
+# DOCKER_USERNAME="username"
 
-sudo apt update
-sudo apt install docker.io -y
+# # sudo apt update
+# sudo apt install docker.io -y
 
 #sudo service docker start
 #sudo systemctl enable docker
