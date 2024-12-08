@@ -54,10 +54,10 @@ export default function PetList() {
                         left: '50%',
                         transform: 'translateX(-50%)',
                         zIndex: 1,
-                        color: red,
+                        
                     }}
                 >
-                    Pet List
+                    Pet Lists
                 </Typography>
 
                 <IconButton
